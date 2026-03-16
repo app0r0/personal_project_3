@@ -29,7 +29,7 @@ const metadata = {
     description: "Boost your learning efficiency with our free Pomodoro and AB loop tool. No login required, works on mobile and desktop!",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.svg",
   },
   robots: {
     index: true,
@@ -41,9 +41,6 @@ const metadata = {
       "max-image-preview": "large",
     },
   },
-  verification: {
-    google: "your-google-site-verification-code",
-  }
 };
 
 export default function RootLayout({ children }) {
