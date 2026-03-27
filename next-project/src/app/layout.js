@@ -47,20 +47,20 @@ export default function RootLayout({ children }) {
   return (
     <html>
       <head>
-        <HotjarProvider />
-        {/* Google Advertising Tag */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-11508731587"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'AW-11508731587');
-          `}
-        </Script>
+	{/* Google Analytics GA4 */}
+	<Script
+  	src="https://www.googletagmanager.com/gtag/js?id=G-QD000NZJYL"
+  	strategy="afterInteractive"
+	/>
+	<Script id="google-analytics" strategy="afterInteractive">
+  	{`
+    	window.dataLayer = window.dataLayer || [];
+    	function gtag(){dataLayer.push(arguments);}
+    	gtag('js', new Date());
+    	gtag('config', 'G-QD000NZJYL');
+  	`}
+	</Script>
+	<HotjarProvider />
       </head>
       <body>
         <DisplayLockProvider>
