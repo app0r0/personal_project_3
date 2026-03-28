@@ -5,31 +5,31 @@ import YouTubeABLoop from "../../components/abloop/YoutubeLoop";
 import OtherTools from "../../components/common/OtherTools";
 
 export const metadata = {
-  title: "AB Repeat Online - Free AB Loop Player | LearnLooper",
+  title: "AB Repeat for YouTube — Free Loop Player | LearnLooper",
   description:
-    "Free online AB repeat tool for YouTube videos. Loop any section repeatedly for language learning, music practice, and dance training. No login required — ABリピート無料オンラインツール。",
+    "Loop any section of a YouTube video instantly. Perfect for language learning, shadowing, and music practice. Free, no login required.",
   keywords: [
     "AB repeat online",
     "AB loop player",
     "YouTube AB loop",
-    "ABリピート 無料",
-    "語学学習 リピート",
-    "loop YouTube video",
     "AB repeat YouTube",
+    "loop YouTube video",
+    "language learning repeat",
+    "shadowing tool",
     "music practice loop",
   ],
   openGraph: {
-    title: "AB Repeat Online - Free AB Loop Player | LearnLooper",
+    title: "AB Repeat for YouTube — Free Loop Player | LearnLooper",
     description:
-      "Free online AB repeat tool for YouTube videos. Perfect for language learning, music, and dance practice.",
+      "Loop any section of a YouTube video instantly. Perfect for language learning, shadowing, and music practice. Free, no login required.",
     type: "website",
     url: "https://learnlooper.app/tools/abloop",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AB Repeat Online - Free AB Loop Player | LearnLooper",
+    title: "AB Repeat for YouTube — Free Loop Player | LearnLooper",
     description:
-      "Free online AB repeat tool for YouTube videos. Perfect for language learning, music, and dance practice.",
+      "Loop any section of a YouTube video instantly. Perfect for language learning, shadowing, and music practice. Free, no login required.",
   },
   alternates: {
     canonical: "https://learnlooper.app/tools/abloop",
