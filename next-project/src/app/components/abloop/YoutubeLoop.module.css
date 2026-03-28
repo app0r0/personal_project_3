@@ -4,6 +4,28 @@
   margin: auto;
   margin-bottom: 10px;
 }
+.pageTitle {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0.4rem;
+  padding: 0 0.5rem;
+}
+.pageDescription {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+  padding: 0 0.5rem;
+}
+@media (max-width: 768px) {
+  .pageTitle {
+    font-size: 1.1rem;
+  }
+  .pageDescription {
+    font-size: 0.85rem;
+  }
+}
 .urlInputContainer {
   display: flex;
   flex-direction: column;
