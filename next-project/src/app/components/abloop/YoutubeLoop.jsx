@@ -4,19 +4,6 @@ import { Play, Pause, Repeat } from "lucide-react";
 import styles from "./YoutubeLoop.module.css";
 
 const YouTubeABLoop = () => {
-  const getInitialMemo = () => {
-    const storedMemo = localStorage.getItem("memo");
-    if (storedMemo) {
-      try {
-        const parsedMemo = JSON.parse(storedMemo);
-        return Array.isArray(parsedMemo) ? parsedMemo : [];
-      } catch (e) {
-        console.error("Failed to parse stored memo:", e);
-        return [];
-      }
-    }
-    return [];
-  };
   const [videoUrl, setVideoUrl] = useState(
     "https://www.youtube.com/watch?v=lN8xbrzvggA&ab_channel=JazzTutorial%7CwithJulianBradley"
   );
@@ -31,12 +18,12 @@ const YouTubeABLoop = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const playerRef = useRef(null);
   const timerRef = useRef(null);
-  const elementRef = useRef(null);
-  const [width, setWidth] = useState(0);
+
   /*urlが変更されたらID抽出 */
   useEffect(() => {
     extractVideoId();
   }, [videoUrl]);
+
   /*IDが変更されたらプレイヤー作成 */
   useEffect(() => {
     if (!window.YT) {
@@ -57,6 +44,7 @@ const YouTubeABLoop = () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [videoId]);
+
   /*startTime,endTimeが変更されたら*/
   useEffect(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -68,12 +56,7 @@ const YouTubeABLoop = () => {
       }
     }, 100);
   }, [startTime, endTime, isLooping, currentTime]);
-  useEffect(() => {
-    // DOMが完全にロードされた後に要素の幅を取得
-    if (elementRef.current) {
-      setWidth(elementRef.current.offsetWidth);
-    }
-  }, []);
+
   // ページ読み込み時にローカルストレージからメモを取得
   useEffect(() => {
     const storedMemo = localStorage.getItem("abloop-memo");
@@ -83,7 +66,6 @@ const YouTubeABLoop = () => {
         setMemo(Array.isArray(parsedMemo) ? parsedMemo : []);
       } catch (e) {
         console.error("Failed to parse stored memo:", e);
-
         setMemo([]);
       }
     }
@@ -92,11 +74,10 @@ const YouTubeABLoop = () => {
   // メモが変更されたらローカルストレージに保存
   useEffect(() => {
     if (memo.length > 0) {
-      // メモが空でない場合のみ保存
       localStorage.setItem("abloop-memo", JSON.stringify(memo));
-      console.log("Saving to localStorage:", memo);
     }
   }, [memo]);
+
   /*以下関数 */
   const createPlayer = (id) => {
     if (playerRef.current) {
@@ -122,8 +103,6 @@ const YouTubeABLoop = () => {
       duration: duration,
       title: event.target.getVideoData().title,
     });
-
-    // 初期のデフォルト設定
     setEndTime(duration);
   };
 
@@ -131,15 +110,12 @@ const YouTubeABLoop = () => {
     switch (event.data) {
       case window.YT.PlayerState.PLAYING:
         setIsPlaying(true);
-
         break;
       case window.YT.PlayerState.PAUSED:
         setIsPlaying(false);
-
         break;
       case window.YT.PlayerState.ENDED:
         setIsPlaying(false);
-
         if (isLooping) {
           playerRef.current.seekTo(startTime);
           playerRef.current.playVideo();
@@ -165,7 +141,6 @@ const YouTubeABLoop = () => {
 
   const togglePlayPause = () => {
     if (!playerRef.current) return;
-
     if (isPlaying) {
       playerRef.current.pauseVideo();
     } else {
@@ -193,23 +168,33 @@ const YouTubeABLoop = () => {
       newStartTime < (videoMetadata?.duration || Infinity)
     ) {
       setStartTime(newStartTime);
-
-      // エンドタイムが開始時間より前の場合は調整
       if (newStartTime >= endTime) {
         setEndTime(videoMetadata.duration);
+      }
+      if (playerRef.current) {
+        playerRef.current.seekTo(newStartTime, true);
       }
     }
   };
 
   const handleEndTimeChange = (e) => {
     const newEndTime = parseFloat(e.target.value);
-
     if (
       newEndTime > startTime &&
       newEndTime <= (videoMetadata?.duration || Infinity)
     ) {
       setEndTime(newEndTime);
-      console.log("endtime updated" + newEndTime);
+      if (playerRef.current) {
+        playerRef.current.seekTo(newEndTime, true);
+      }
+    }
+  };
+
+  const handleSeek = (e) => {
+    const seekTime = parseFloat(e.target.value);
+    setCurrentTime(seekTime);
+    if (playerRef.current) {
+      playerRef.current.seekTo(seekTime, true);
     }
   };
 
@@ -220,22 +205,28 @@ const YouTubeABLoop = () => {
   const setCurrentTimeAsEnd = () => {
     setEndTime(currentTime);
   };
+
   const clearURL = () => {
     setVideoUrl("");
   };
+
   const handleSaveUrls = (event) => {
     const [url, title] = event.target.value.split(",");
     if (url && title) {
       const newMemo = [...memo, [url, title]];
       setMemo(newMemo);
-      console.log("Updated memo:", newMemo);
     }
   };
+
   const copyToClipboard = (url) => {
-    console.log(url);
     navigator.clipboard.writeText(url);
     alert("Copied URL !");
   };
+
+  const duration = videoMetadata?.duration || 0;
+  const startPercent = Math.min(Math.max(duration > 0 ? (startTime / duration) * 100 : 0, 0), 100);
+  const endPercent = Math.min(Math.max(duration > 0 ? (endTime / duration) * 100 : 100, 0), 100);
+
   return (
     <div className={styles.abLoopContainer}>
       <h1 className={styles.pageTitle}>AB Repeat Online — Free AB Loop Player</h1>
@@ -291,39 +282,58 @@ const YouTubeABLoop = () => {
         </div>
 
         <div className={styles.abLoopControls}>
-          <div className={styles.slidebarMultithumb} ref={elementRef}>
-            <input
-              className={styles.thumb1Input}
-              type="range"
-              value={startTime}
-              onChange={handleStartTimeChange}
-              step="0.1"
-              min="0"
-              max={videoMetadata?.duration || 0}
-            />
+          <div className={styles.sliderWrapper}>
+            <div className={styles.slidebarMultithumb}>
+              <input
+                className={styles.thumb1Input}
+                type="range"
+                value={startTime}
+                onChange={handleStartTimeChange}
+                step="0.1"
+                min="0"
+                max={duration}
+              />
 
-            <input
-              className={styles.thumb2Input}
-              type="range"
-              value={endTime}
-              onChange={handleEndTimeChange}
-              step="0.1"
-              max={videoMetadata?.duration || 0}
-            />
+              <input
+                className={styles.thumb2Input}
+                type="range"
+                value={endTime}
+                onChange={handleEndTimeChange}
+                step="0.1"
+                max={duration}
+              />
 
-            <div
-              className={styles.thumb3}
-              style={{
-                transform: `translate(${
-                  (width * currentTime) / (videoMetadata?.duration || 0)
-                }px,0)`,
-              }}
-            ></div>
-            <div className={styles.thumbTitleWrapper}>
-              <p className={styles.thumb1Title}>{formatTime(startTime)}</p>
-              <p className={styles.thumb2Title}>{formatTime(endTime)}</p>
+              <input
+                className={styles.seekInput}
+                type="range"
+                value={currentTime}
+                onChange={handleSeek}
+                step="0.1"
+                min="0"
+                max={duration}
+              />
             </div>
+
+            {videoMetadata && (
+              <div className={styles.markersRow}>
+                <div
+                  className={styles.markerA}
+                  style={{ left: `${startPercent}%` }}
+                >
+                  <div className={styles.markerLine} />
+                  {formatTime(startTime)}
+                </div>
+                <div
+                  className={styles.markerB}
+                  style={{ left: `${endPercent}%` }}
+                >
+                  <div className={styles.markerLine} />
+                  {formatTime(endTime)}
+                </div>
+              </div>
+            )}
           </div>
+
           <div className={styles.controlIcons}>
             <button
               onClick={togglePlayPause}

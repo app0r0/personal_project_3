@@ -1,9 +1,15 @@
 .abLoopContainer {
   max-width: 800px;
+  width: 100%;
+  box-sizing: border-box;
   align-items: center;
   margin: auto;
   margin-bottom: 10px;
+  background-color: #ffffff;
+  padding: 1rem;
+  overflow-x: hidden;
 }
+
 .pageTitle {
   font-size: 1.4rem;
   font-weight: bold;
@@ -11,6 +17,7 @@
   margin-bottom: 0.4rem;
   padding: 0 0.5rem;
 }
+
 .pageDescription {
   font-size: 0.9rem;
   color: #666;
@@ -18,6 +25,7 @@
   margin-bottom: 1.2rem;
   padding: 0 0.5rem;
 }
+
 @media (max-width: 768px) {
   .pageTitle {
     font-size: 1.1rem;
@@ -26,176 +34,336 @@
     font-size: 0.85rem;
   }
 }
+
+/* URL入力エリア */
 .urlInputContainer {
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
 }
+
 .urlInputBox {
   display: flex;
-  gap: 5px;
+  gap: 8px;
+  align-items: center;
 }
+
 .urlInputBox > input {
   flex-grow: 1;
-  padding: 5px;
-  font-size: 16px;
-  border: 1px solid #999;
-  background-color: #e0e0e0;
-
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.7);
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f5f5f5;
+  transition: all 0.3s ease;
+  outline: none;
 }
+
+.urlInputBox > input:focus {
+  border-color: #2196f3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}
+
 .urlInputBox button {
-  display: block;
-  margin: 3px auto;
-  border: 1px solid black;
-  border-radius: 10px;
-  margin-top: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3),
-    -2px -2px 5px rgba(255, 255, 255, 0.2);
-}
-.urlInputBox button:hover {
-  background-color: black;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #2196f3;
   color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  height: 48px;
+  white-space: nowrap;
 }
 
-.youtubePlayer {
+.urlInputBox button:hover {
+  background-color: #1976d2;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* メモアイテム */
+.memoItem {
+  margin-top: 4px;
+}
+
+.memoButton {
+  background: none;
+  border: none;
+  color: #2196f3;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 2px 4px;
+  text-align: left;
+  transition: color 0.2s ease;
+}
+
+.memoButton:hover {
+  color: #1976d2;
+  text-decoration: underline;
+}
+
+/* プレイヤーラッパー（アスペクト比コンテナ） */
+.playerContainer {
+  position: relative;
   width: 100%;
-  aspect-ratio: 16/9;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: black;
+  overflow: hidden;
+}
+
+/* YouTube API が生成する iframe を絶対配置で埋める */
+.playerContainer iframe,
+.youtubePlayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: none;
   background-color: black;
 }
 
 .videoInfo {
-  margin-top: 10px;
+  margin-top: 8px;
   font-size: 14px;
   color: #666;
 }
 
-.loopRange {
-  position: absolute;
-  height: 100%;
-  background-color: rgba(0, 123, 255, 0.3);
-}
-
+/* コントロール全体 */
 .abLoopControls {
   display: flex;
   flex-direction: column;
 }
 
-/* グリッド */
-.slidebarMultithumb {
-  display: grid;
-  padding-top: 0;
-  margin-bottom: 2rem;
-  box-shadow: 2px 2px 5px #0000004d, -2px -2px 5px #fff3;
+/* スライダーラッパー */
+.sliderWrapper {
+  margin-bottom: 2.5rem;
   position: relative;
-  width: 100%;
-  height: 27px;
 }
 
-/* inputのスタイル */
+/* グリッド（重ねて配置） */
+.slidebarMultithumb {
+  display: grid;
+  position: relative;
+  width: 100%;
+  height: 20px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* A/Bスライダー共通 */
 .thumb1Input,
-.thumb2Input,
-.thumb3 {
+.thumb2Input {
   grid-column: 1;
   grid-row: 1;
   pointer-events: none;
   -webkit-appearance: none;
+  appearance: none;
   background: none;
-  border: 1px solid;
-  height: 25px;
-  overflow: hidden;
-}
-.thumbTitleWrapper {
-  display: flex;
-  justify-content: space-between;
+  border: none;
+  height: 20px;
+  margin: 0;
 }
 
-.thumb2Title {
+/* シークバー（現在再生位置） */
+.seekInput {
+  grid-column: 1;
+  grid-row: 1;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  border: none;
+  height: 20px;
+  z-index: 4;
+  margin: 0;
 }
-/* つまみ部分のスタイル */
+
+/* A/Bスライダーのつまみ */
 .slidebarMultithumb ::-webkit-slider-thumb {
   pointer-events: auto;
   -webkit-appearance: none;
   width: 15px;
-  height: 25px;
+  height: 15px;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
-/* それぞれのつまみのスタイル */
+/* A点つまみ */
 .thumb1Input {
   z-index: 2;
 }
+.thumb1Input::-webkit-slider-thumb {
+  background: #fc9d9d;
+  box-shadow: -100vw 0 0 100vw #ffffff;
+}
+.thumb1Input::-webkit-slider-thumb:hover {
+  background-color: #f44336;
+}
+
+/* B点つまみ */
 .thumb2Input {
   z-index: 1;
 }
-.thumb3 {
-  z-index: 3;
-  width: 10px;
-  background-color: black;
-}
-.thumb1Input::-webkit-slider-thumb {
-  background: #fc9d9d;
-  box-shadow: -100vw 0 0 100vw white;
-}
-.thumb1Input::-webkit-slider-thumb:hover {
-  background-color: #ff7272;
-}
 .thumb2Input::-webkit-slider-thumb {
-  background: #aad6ec;
-  box-shadow: -100vw 0 0 100vw #eef9ff;
+  background: #2196f3;
+  box-shadow: -100vw 0 0 100vw #e3f2fd;
 }
 .thumb2Input::-webkit-slider-thumb:hover {
-  background-color: #59b8e8;
+  background-color: #1976d2;
 }
+
+/* シークバーのつまみ */
+.seekInput::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  width: 3px;
+  height: 28px;
+  background-color: #333;
+  cursor: pointer;
+  border-radius: 1px;
+}
+
+/* A・B マーカーラベル行 */
+.markersRow {
+  position: relative;
+  height: 24px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.markerA,
+.markerB {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  user-select: none;
+  transform: translateX(-50%);
+}
+
+.markerLine {
+  width: 2px;
+  height: 5px;
+  border-radius: 1px;
+}
+
+.markerA {
+  color: #e53935;
+}
+.markerA .markerLine {
+  background-color: #fc9d9d;
+}
+
+.markerB {
+  color: #1976d2;
+}
+.markerB .markerLine {
+  background-color: #2196f3;
+}
+
+/* 再生・ループボタン */
 .controlIcons {
   display: flex;
-  gap: 30px;
+  gap: 16px;
   justify-content: center;
-  height: 60px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
-.controlIcons > Button > svg {
-  transform: translate(-11px, -8px);
+
+.controlIcons > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: none;
+  border-radius: 50%;
+  background-color: #2196f3;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
-.controlIcons > *:hover {
-  background-color: black;
+
+.controlIcons > button:hover {
+  background-color: #1976d2;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.controlIcons > button:disabled {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.controlIcons > button > svg {
+  width: 24px;
+  height: 24px;
+}
+
+.loopingActive {
+  background-color: #fc9d9d !important;
   color: white;
 }
 
-div.controlIcons > button {
-  height: 70px;
-  width: 70px;
-  border-radius: 35px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3),
-    -2px -2px 5px rgba(255, 255, 255, 0.2);
+.loopingActive:hover {
+  background-color: #f44336 !important;
 }
-div.controlIcons > button > * {
-  height: 60px;
-  width: 60px;
-  padding: 10px;
+
+/* Set A/B ボタン */
+.controlButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
 }
-div.controlButtons > button {
-  display: block;
-  margin: 0 auto;
-  border: 1px solid black;
-  border-radius: 10px;
-  margin-top: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3),
-    -2px -2px 5px rgba(255, 255, 255, 0.2);
+
+.controlButtons > button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #f5f5f5;
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 360px;
 }
-div.controlButtons > button:hover {
-  border: 1px solid black;
-  background-color: black;
-  color: white;
+
+.controlButtons > button:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
-.loopingActive {
-  color: #fc9d9d;
-}
+
 .setStartTimeButton {
   display: inline;
-  color: #fc9d9d;
+  color: #e53935;
+  font-weight: 600;
 }
+
 .setEndTimeButton {
   display: inline;
-  color: #aad6ec;
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.errorMessage {
+  color: #f44336;
+  font-size: 0.85rem;
+  min-height: 1.2em;
+  margin: 4px 0;
 }
