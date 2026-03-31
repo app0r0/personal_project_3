@@ -5,24 +5,26 @@ import React, {
   useContext,
   useRef,
   useCallback,
+  useEffect,
 } from "react";
 
 const YouTubeContext = createContext();
 
+const STORAGE_KEY = "learnlooper_favorites";
+
 export const YouTubeProvider = ({ children }) => {
   const [videoUrl, setVideoUrl] = useState("");
   const [videoId, setVideoId] = useState("");
-  const [startTime, setStartTime] = useState(0);
-  const [endTime, setEndTime] = useState(60);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
-  const [savedVideos, setSavedVideos] = useState([]);
-  const [videoMetadata, setVideoMetadata] = useState({
-    title: "",
-    channelTitle: "",
-    duration: 0,
-  });
+  const [favorites, setFavorites] = useState([]);
+  const [videoMetadata, setVideoMetadata] = useState({ title: "", channelTitle: "" });
   const playerRef = useRef(null);
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    setFavorites(stored);
+  }, []);
 
   const playVideo = useCallback(() => {
     if (playerRef.current && isPlayerReady) {
@@ -46,52 +48,44 @@ export const YouTubeProvider = ({ children }) => {
     }
   }, [isPlayerReady]);
 
-  const fetchVideoMetadata = useCallback(async (videoId) => {
-    if (!videoId) return;
-
+  const fetchVideoMetadata = useCallback(() => {
     try {
       const videoData = playerRef.current.getVideoData();
-
-      const duration = playerRef.current.getDuration();
-      const metadata = {
+      setVideoMetadata({
         title: videoData.title,
         channelTitle: videoData.author,
-        duration: duration,
-      };
-      setVideoMetadata(metadata);
-
-      return metadata;
+      });
     } catch (error) {
       console.error("Error fetching video metadata:", error);
-      return null;
     }
   }, []);
 
   const initializePlayer = useCallback(
-    (videoId) => {
-      if (!videoId) return;
+    (id, autoplay = false) => {
+      if (!id) return;
       if (playerRef.current) {
         playerRef.current.destroy();
       }
       try {
         playerRef.current = new window.YT.Player("youtube-player", {
-          videoId: videoId,
+          videoId: id,
           playerVars: {
-            start: startTime,
-            end: endTime,
             controls: 1,
+            autoplay: autoplay ? 1 : 0,
           },
           events: {
             onReady: () => {
               setIsPlayerReady(true);
-              fetchVideoMetadata(videoId);
+              fetchVideoMetadata();
             },
             onStateChange: (event) => {
-              if (event.data === window.YT.PlayerState.ENDED) {
-                if (isPlaying) {
-                  playerRef.current.seekTo(startTime);
-                  playerRef.current.playVideo();
-                }
+              if (event.data === window.YT.PlayerState.PLAYING) {
+                setIsPlaying(true);
+              } else if (
+                event.data === window.YT.PlayerState.PAUSED ||
+                event.data === window.YT.PlayerState.ENDED
+              ) {
+                setIsPlaying(false);
               }
             },
           },
@@ -101,7 +95,7 @@ export const YouTubeProvider = ({ children }) => {
         setIsPlayerReady(false);
       }
     },
-    [startTime, endTime, isPlaying, videoId, fetchVideoMetadata]
+    [fetchVideoMetadata]
   );
 
   const cleanupPlayer = useCallback(() => {
@@ -110,59 +104,12 @@ export const YouTubeProvider = ({ children }) => {
         playerRef.current.destroy();
         playerRef.current = null;
         setIsPlayerReady(false);
-        setVideoMetadata({
-          title: "",
-          channelTitle: "",
-          duration: 0,
-        });
+        setVideoMetadata({ title: "", channelTitle: "" });
       } catch (error) {
         console.error("Error cleaning up player:", error);
       }
     }
   }, []);
-
-  const clearURL = () => {
-    setVideoUrl("");
-    setVideoId("");
-    setVideoMetadata({
-      title: "",
-      channelTitle: "",
-      duration: 0,
-    });
-  };
-
-  const saveURLs = () => {
-    if (videoUrl && videoMetadata.title) {
-      // 現在のURLと同じものを除外した配列を作成
-      const filteredVideos = savedVideos.filter(
-        (video) => video.url !== videoUrl
-      );
-
-      // 新しいビデオを配列の先頭に追加
-      const updatedVideos = [
-        {
-          url: videoUrl,
-          title: videoMetadata.title,
-        },
-        ...filteredVideos,
-      ];
-
-      // ローカルストレージに保存
-      localStorage.setItem("savedVideos", JSON.stringify(updatedVideos));
-      setSavedVideos(updatedVideos);
-    }
-  };
-
-  const loadSavedVideo = (url) => {
-    setVideoUrl(url);
-    const id = extractVideoId(url);
-    if (id) {
-      setVideoId(id);
-      setStartTime(0);
-      setEndTime(60);
-      initializePlayer(id);
-    }
-  };
 
   const extractVideoId = (url) => {
     const match = url.match(
@@ -171,6 +118,50 @@ export const YouTubeProvider = ({ children }) => {
     return match ? match[1] : null;
   };
 
+  const clearURL = () => {
+    setVideoUrl("");
+    setVideoId("");
+    setVideoMetadata({ title: "", channelTitle: "" });
+  };
+
+  const saveFavorite = useCallback(
+    (category) => {
+      const title = videoMetadata.title || videoUrl;
+      const newItem = {
+        url: videoUrl,
+        title,
+        category,
+        savedAt: new Date().toISOString(),
+      };
+      const filtered = favorites.filter((f) => f.url !== videoUrl);
+      const updated = [newItem, ...filtered];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      setFavorites(updated);
+    },
+    [videoUrl, videoMetadata, favorites]
+  );
+
+  const deleteFavorite = useCallback(
+    (url) => {
+      const updated = favorites.filter((f) => f.url !== url);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      setFavorites(updated);
+    },
+    [favorites]
+  );
+
+  const loadSavedVideo = useCallback(
+    (url) => {
+      setVideoUrl(url);
+      const id = extractVideoId(url);
+      if (id) {
+        setVideoId(id);
+        initializePlayer(id, true);
+      }
+    },
+    [initializePlayer]
+  );
+
   return (
     <YouTubeContext.Provider
       value={{
@@ -178,10 +169,6 @@ export const YouTubeProvider = ({ children }) => {
         setVideoUrl,
         videoId,
         setVideoId,
-        startTime,
-        setStartTime,
-        endTime,
-        setEndTime,
         isPlaying,
         setIsPlaying,
         isPlayerReady,
@@ -192,12 +179,12 @@ export const YouTubeProvider = ({ children }) => {
         initializePlayer,
         cleanupPlayer,
         clearURL,
-        saveURLs,
-        savedVideos,
-        setSavedVideos,
+        extractVideoId,
+        saveFavorite,
+        deleteFavorite,
+        favorites,
         loadSavedVideo,
         videoMetadata,
-        extractVideoId,
       }}
     >
       {children}

@@ -16,6 +16,13 @@ export const PomodoroProvider = ({ children }) => {
   const [timeRemaining, setTimeRemaining] = useState(studyDuration);
   const [isActive, setIsActive] = useState(false);
 
+  // 通知許可を初回にリクエスト
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      Notification.requestPermission();
+    }
+  }, []);
+
   // タイマーの自動切り替え処理
   useEffect(() => {
     let interval = null;
@@ -26,11 +33,13 @@ export const PomodoroProvider = ({ children }) => {
     } else if (timeRemaining === 0) {
       // 時間切れの処理
       if (isStudying) {
-        // 学習時間が終わったらBreak timeに切り替え
+        // ブラウザ通知を送信
+        if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+          new Notification("Time's up! Take a break.");
+        }
         setIsStudying(false);
         setTimeRemaining(breakDuration);
       } else {
-        // Break timeが終わったら学習時間に切り替え
         setIsStudying(true);
         setTimeRemaining(studyDuration);
       }

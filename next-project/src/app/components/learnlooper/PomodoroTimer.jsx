@@ -1,7 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { usePomodoro } from "../../contexts/learnlooper/PomodoroContext";
 import styles from "./MainContainer.module.css";
+
+const PRESETS = [1, 15, 25, 30, 45];
+
 const PomodoroTimer = () => {
   const {
     isStudying,
@@ -10,35 +13,24 @@ const PomodoroTimer = () => {
     startTimer,
     pauseTimer,
     resetTimer,
-    setTimeRemaining,
-    setIsStudying,
     studyDuration,
-    breakDuration,
     updateStudyDuration,
   } = usePomodoro();
 
-  useEffect(() => {
-    let interval = null;
-    if (isActive && timeRemaining > 0) {
-      interval = setInterval(() => {
-        setTimeRemaining((time) => time);
-      }, 1000);
-    } else if (timeRemaining === 0) {
-      if (isStudying) {
-        setIsStudying(false);
-        setTimeRemaining(breakDuration);
-      } else {
-        setIsStudying(true);
-        setTimeRemaining(studyDuration);
-      }
-    }
-    return () => clearInterval(interval);
-  }, [isActive, timeRemaining, isStudying]);
+  const [customMinutes, setCustomMinutes] = useState("");
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleSetCustom = () => {
+    const mins = parseInt(customMinutes, 10);
+    if (mins > 0) {
+      updateStudyDuration(mins);
+      setCustomMinutes("");
+    }
   };
 
   return (
@@ -52,17 +44,36 @@ const PomodoroTimer = () => {
           {isActive ? "Pause" : "Start"}
         </button>
         <button onClick={resetTimer}>Reset</button>
-        <select
-          value={studyDuration / 60}
-          onChange={(e) => updateStudyDuration(parseInt(e.target.value))}
+      </div>
+      <div className={styles.presetButtons}>
+        {PRESETS.map((min) => (
+          <button
+            key={min}
+            onClick={() => updateStudyDuration(min)}
+            disabled={isActive}
+            className={studyDuration === min * 60 ? styles.presetActive : ""}
+          >
+            {min}m
+          </button>
+        ))}
+      </div>
+      <div className={styles.customDuration}>
+        <input
+          type="number"
+          min="1"
+          max="180"
+          value={customMinutes}
+          onChange={(e) => setCustomMinutes(e.target.value)}
+          placeholder="min"
           disabled={isActive}
+          className={styles.customMinutesInput}
+        />
+        <button
+          onClick={handleSetCustom}
+          disabled={isActive || !customMinutes}
         >
-          <option value="1">1 min</option>
-          <option value="15">15 min</option>
-          <option value="25">25 min</option>
-          <option value="30">30 min</option>
-          <option value="45">45 min</option>
-        </select>
+          Set
+        </button>
       </div>
     </div>
   );

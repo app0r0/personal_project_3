@@ -177,3 +177,90 @@
   border-color: #2196f3;
   box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
 }
+
+/* プリセット時間ボタン */
+.presetButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.presetButtons button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  color: #333;
+  transition: all 0.2s;
+}
+
+.presetButtons button:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.presetButtons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.presetActive {
+  background-color: #2196f3 !important;
+  color: white !important;
+}
+
+/* カスタム時間入力 */
+.customDuration {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.customMinutesInput {
+  width: 70px;
+  padding: 6px 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.customMinutesInput:focus {
+  border-color: #2196f3;
+}
+
+.customMinutesInput:disabled {
+  opacity: 0.5;
+}
+
+.customDuration button {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #2196f3;
+  color: white;
+  transition: background-color 0.2s;
+  height: auto;
+  margin: 0;
+  box-shadow: none;
+}
+
+.customDuration button:hover:not(:disabled) {
+  background-color: #1976d2;
+}
+
+.customDuration button:disabled {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+}

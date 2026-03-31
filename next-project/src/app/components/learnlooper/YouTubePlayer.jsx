@@ -1,7 +1,14 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./YouTubePlayer.module.css";
 import { useYouTube } from "../../contexts/learnlooper/YouTubeContext";
+
+const CATEGORIES = [
+  { id: "study", label: "Study", emoji: "📚" },
+  { id: "break", label: "Break", emoji: "☕" },
+  { id: "healing", label: "Healing", emoji: "🌿" },
+  { id: "focus", label: "Focus", emoji: "💪" },
+];
 
 const YouTubePlayer = () => {
   const {
@@ -9,36 +16,20 @@ const YouTubePlayer = () => {
     setVideoUrl,
     videoId,
     setVideoId,
-    startTime,
-    setStartTime,
-    endTime,
-    setEndTime,
     initializePlayer,
     cleanupPlayer,
-    playerRef,
     clearURL,
-    saveURLs,
-    isPlaying,
-    playVideo,
-    pauseVideo,
-    setSavedVideos,
-    savedVideos,
-    loadSavedVideo,
     extractVideoId,
+    videoMetadata,
+    saveFavorite,
+    deleteFavorite,
+    favorites,
+    loadSavedVideo,
   } = useYouTube();
 
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(60);
-  const elementRef = useRef(null);
-  const [isPlayerReady, setIsPlayerReady] = useState(false);
+  const [showCategoryPicker, setShowCategoryPicker] = useState(false);
+  const [activeTab, setActiveTab] = useState("study");
 
-  // コンポーネントがマウントされたときに、ローカルストレージからデータを取得する
-  useEffect(() => {
-    const storedVideos = JSON.parse(localStorage.getItem("savedVideos")) || [];
-    setSavedVideos(storedVideos);
-  }, []);
-
-  // YouTubeプレイヤーの初期化と後処理
   useEffect(() => {
     if (!window.YT) {
       const tag = document.createElement("script");
@@ -47,74 +38,35 @@ const YouTubePlayer = () => {
       const firstScriptTag = document.getElementsByTagName("script")[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
       window.onYouTubeIframeAPIReady = () => {
-        if (videoId) {
-          initializePlayer(videoId);
-          setIsPlayerReady(true);
-        }
+        if (videoId) initializePlayer(videoId);
       };
     } else if (videoId) {
       initializePlayer(videoId);
-      setIsPlayerReady(true);
     }
     return () => cleanupPlayer();
   }, [videoId, initializePlayer, cleanupPlayer]);
 
-  // プレイヤーの状態を監視する
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (playerRef.current && isPlayerReady) {
-        const currentTime = playerRef.current.getCurrentTime();
-        setCurrentTime(currentTime);
-
-        if (!duration || duration === 60) {
-          const newDuration = playerRef.current.getDuration();
-          setDuration(newDuration);
-          setEndTime(newDuration);
-        }
-
-        if (currentTime >= endTime) {
-          playerRef.current.seekTo(startTime);
-        }
-      }
-    }, 100);
-    return () => clearInterval(interval);
-  }, [playerRef, isPlayerReady, startTime, endTime, duration]);
-
-  // URLの変更処理
   const handleUrlChange = (e) => {
     const url = e.target.value;
     setVideoUrl(url);
+    setShowCategoryPicker(false);
     const id = extractVideoId(url);
     if (id) {
       setVideoId(id);
-      setStartTime(0);
-      setEndTime(duration);
       initializePlayer(id);
     }
   };
 
-  // スライダーの変更処理
-  const handleSliderChange = (type, value) => {
-    const time = (value / 100) * duration;
-    if (type === "start") {
-      setStartTime(time);
-      if (playerRef.current && isPlayerReady) {
-        playerRef.current.seekTo(time);
-      }
-    } else {
-      setEndTime(Math.min(time, duration));
-    }
+  const handleSave = (category) => {
+    saveFavorite(category);
+    setShowCategoryPicker(false);
   };
 
-  // 時間の書式化
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
+  const tabItems = favorites.filter((f) => f.category === activeTab);
 
   return (
-    <div ref={elementRef} className={styles.playerWrapper}>
+    <div className={styles.playerWrapper}>
+      {/* URL入力エリア */}
       <div className={styles.urlInput}>
         <input
           type="text"
@@ -122,49 +74,77 @@ const YouTubePlayer = () => {
           onChange={handleUrlChange}
           placeholder="YouTube URL"
         />
-
         <button onClick={clearURL}>Clear</button>
-        <button onClick={saveURLs}>Save URL</button>
+        {videoMetadata.title && (
+          <button onClick={() => setShowCategoryPicker((v) => !v)}>Save</button>
+        )}
       </div>
-      <div className={styles.savedVideos}>
-        {savedVideos.map((video, index) => (
-          <div
-            key={index}
-            className={styles.savedVideoTitle}
-            onClick={() => loadSavedVideo(video.url)}
+
+      {/* カテゴリ選択（インライン展開） */}
+      {showCategoryPicker && (
+        <div className={styles.categoryPicker}>
+          <span className={styles.categoryLabel}>Save to:</span>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => handleSave(cat.id)}
+              className={styles.categoryBtn}
+            >
+              {cat.emoji} {cat.label}
+            </button>
+          ))}
+          <button
+            onClick={() => setShowCategoryPicker(false)}
+            className={styles.cancelBtn}
           >
-            {video.title}
-          </div>
-        ))}
-      </div>
-      <div id="youtube-player" className={styles.youtubeFrame}></div>
-      <div className={styles.sliderControls}>
-        <div className={styles.doubleSliderContainer}>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={(startTime / (duration || 1)) * 100}
-            onChange={(e) =>
-              handleSliderChange("start", parseFloat(e.target.value))
-            }
-            className={styles.slider + " " + styles.startSlider}
-          />
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={(endTime / (duration || 1)) * 100}
-            onChange={(e) =>
-              handleSliderChange("end", parseFloat(e.target.value))
-            }
-            className={styles.slider + " " + styles.endSlider}
-          />
+            Cancel
+          </button>
         </div>
-        <div className={styles.timeDisplay}>
-          <span>Start: {formatTime(startTime)}</span>
-          <span>Current: {formatTime(currentTime)}</span>
-          <span>End: {formatTime(endTime)}</span>
+      )}
+
+      {/* YouTubeプレイヤー */}
+      <div className={styles.youtubeFrame}>
+        <div id="youtube-player"></div>
+      </div>
+
+      {/* My Playlists */}
+      <div className={styles.playlists}>
+        <h3 className={styles.playlistsTitle}>My Playlists</h3>
+        <div className={styles.playlistTabs}>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveTab(cat.id)}
+              className={activeTab === cat.id ? styles.activeTab : styles.tab}
+            >
+              {cat.emoji} {cat.label}
+            </button>
+          ))}
+        </div>
+        <div className={styles.playlistItems}>
+          {tabItems.length === 0 ? (
+            <p className={styles.emptyMessage}>No saved videos in this category.</p>
+          ) : (
+            tabItems.map((item, i) => (
+              <div key={i} className={styles.playlistItem}>
+                <span className={styles.itemTitle}>{item.title}</span>
+                <div className={styles.itemActions}>
+                  <button
+                    onClick={() => loadSavedVideo(item.url)}
+                    className={styles.playBtn}
+                  >
+                    ▶ Play
+                  </button>
+                  <button
+                    onClick={() => deleteFavorite(item.url)}
+                    className={styles.deleteBtn}
+                  >
+                    🗑
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
