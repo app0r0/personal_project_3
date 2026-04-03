@@ -20,6 +20,11 @@ export const YouTubeProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
   const [videoMetadata, setVideoMetadata] = useState({ title: "", channelTitle: "" });
   const playerRef = useRef(null);
+  const isLoopEnabledRef = useRef(false);
+
+  const setLoopEnabled = useCallback((enabled) => {
+    isLoopEnabledRef.current = enabled;
+  }, []);
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
@@ -81,10 +86,14 @@ export const YouTubeProvider = ({ children }) => {
             onStateChange: (event) => {
               if (event.data === window.YT.PlayerState.PLAYING) {
                 setIsPlaying(true);
-              } else if (
-                event.data === window.YT.PlayerState.PAUSED ||
-                event.data === window.YT.PlayerState.ENDED
-              ) {
+              } else if (event.data === window.YT.PlayerState.ENDED) {
+                if (isLoopEnabledRef.current) {
+                  event.target.seekTo(0);
+                  event.target.playVideo();
+                } else {
+                  setIsPlaying(false);
+                }
+              } else if (event.data === window.YT.PlayerState.PAUSED) {
                 setIsPlaying(false);
               }
             },
@@ -185,6 +194,7 @@ export const YouTubeProvider = ({ children }) => {
         favorites,
         loadSavedVideo,
         videoMetadata,
+        setLoopEnabled,
       }}
     >
       {children}

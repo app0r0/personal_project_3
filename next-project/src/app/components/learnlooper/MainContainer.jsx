@@ -8,16 +8,18 @@ import styles from "./MainContainer.module.css";
 
 const MainContainer = () => {
   const { isStudying, isActive } = usePomodoro();
-  const { playVideo, pauseVideo } = useYouTube();
+  const { playVideo, pauseVideo, setLoopEnabled } = useYouTube();
 
   // タイマーが動いている間だけ動画を再生し、止まったら動画も止める
   useEffect(() => {
     if (isActive) {
+      setLoopEnabled(true);
       playVideo();
     } else {
+      setLoopEnabled(false);
       pauseVideo();
     }
-  }, [isActive, playVideo, pauseVideo]);
+  }, [isActive, playVideo, pauseVideo, setLoopEnabled]);
 
   return (
     <div
