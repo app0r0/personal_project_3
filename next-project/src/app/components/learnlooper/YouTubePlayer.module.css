@@ -98,6 +98,61 @@
   background-color: #f0f0f0;
 }
 
+/* YouTubeプレイヤーエリア（経過時間＋動画＋トグルボタンのコンテナ） */
+.playerArea {
+  position: relative;
+  width: 100%;
+}
+
+/* 経過時間カウンター */
+.elapsedCounter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #1a1a2e;
+  border-radius: 4px;
+}
+
+.elapsedLabel {
+  font-size: 1rem;
+  color: #aaa;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.elapsedTime {
+  font-size: 5rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+/* YouTube表示切替ボタン（右下隅・目立たないデザイン） */
+.youtubeToggleBtn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.youtubeToggleBtn:hover {
+  opacity: 1;
+}
+
 /* YouTubeプレイヤー（アスペクト比コンテナ） */
 .youtubeFrame {
   position: relative;
