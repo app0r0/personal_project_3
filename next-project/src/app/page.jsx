@@ -1,4 +1,22 @@
 import Link from "next/link";
+
+export const metadata = {
+  title: "LearnLooper — YouTube Loop, Repeat & Pomodoro Study Tools",
+  description:
+    "Free tools to loop and repeat YouTube videos, run Pomodoro timers with music, and stay focused while studying. No sign-up, no ads. Works on mobile and desktop.",
+  keywords: [
+    "youtube loop",
+    "youtube repeat",
+    "youtube looper",
+    "youtube repeater",
+    "youtube ab loop",
+    "youtube pomodoro",
+    "youtube study music",
+    "loop youtube video free",
+    "youtube repeat online",
+    "study with youtube music",
+  ],
+};
 import styles from "./HomePage.module.css";
 import Image from "next/image";
 import { RiTwitterXFill } from "react-icons/ri";

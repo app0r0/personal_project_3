@@ -98,7 +98,7 @@ export default function ProcrastinationToProductivity() {
               Don't let procrastination hold you back any longer. With LearnLooper's proven tools and techniques, you can transform your study habits and boost your productivity immediately.
             </p>
             <div className={styles.cta}>
-              <Link href="/signup" className={styles.ctaButton}>Try LearnLooper Free - Start Your 5 Minutes Now →</Link>
+              <Link href="/tools/learnlooper" className={styles.ctaButton}>Try LearnLooper Free - Start Your 5 Minutes Now →</Link>
             </div>
             <p className={styles.guarantee}>
               Join thousands of students who have already overcome procrastination using LearnLooper's research-backed methods.

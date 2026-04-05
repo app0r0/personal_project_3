@@ -23,6 +23,10 @@ export default function Article1() {
                 </li><li><Link href="/articles/article8">Unlock Your Study Potential: LearnLooper’s Multi-Audio Upload for Efficient Learning</Link></li>
                 <li><Link href="/articles/article9">Revolutionize Your Study Routine: Free Tools to Enhance Learning Productivity</Link></li>
                 <li><Link href="/articles/article10">From Procrastination to Productivity: The Ultimate Guide to Staying Focused with LearnLooper</Link></li>
+                <li><Link href="/articles/article11">How to Loop a YouTube Video: The Complete Guide to YouTube Repeat & Looper Tools</Link></li>
+                <li><Link href="/articles/article12">How to Loop Study Music on YouTube: Café BGM, Rain Sounds & Lo-Fi for Hours</Link></li>
+                <li><Link href="/articles/article13">YouTube Pomodoro: Study with Music Using a Free Timer Tool</Link></li>
+                <li><Link href="/articles/article14">How to Loop a Specific Section of a YouTube Video: AB Repeat Guide</Link></li>
                 </ul >
                 </main>
             <Footer />

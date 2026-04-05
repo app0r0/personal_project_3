@@ -45,9 +45,7 @@ export default function FreeToolsLearningProductivity() {
                 <li>Multi-audio upload capability</li>
                 <li>Zero ads or premium restrictions</li>
               </ul>
-              <div className={styles.rating}>
-                <strong>User Rating:</strong> 4.8/5 (Based on 10,000+ reviews)
-              </div>
+
             </div>
 
             <div className={styles.toolReview}>

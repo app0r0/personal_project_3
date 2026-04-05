@@ -46,9 +46,10 @@ const YouTubePlayer = () => {
     }
   }, [isActive, isStudying]);
 
-  // Break Timeになったらactiveタブをstudy側にリセット
+  // Break Timeになったらactiveタブをstudy側にリセット（breakTimeはStudy中も許可）
   useEffect(() => {
-    if (isStudying && !STUDY_CATEGORIES.some((c) => c.id === activeTab)) {
+    const allStudyTabs = [...STUDY_CATEGORIES, BREAK_CATEGORY];
+    if (isStudying && !allStudyTabs.some((c) => c.id === activeTab)) {
       setActiveTab("study");
     }
   }, [isStudying, activeTab]);
@@ -85,7 +86,7 @@ const YouTubePlayer = () => {
     setShowCategoryPicker(false);
   };
 
-  const formatElapsed = (seconds) => {
+  const formatTime = (seconds) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
@@ -95,7 +96,15 @@ const YouTubePlayer = () => {
     return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
+  const getTimerColor = (elapsedRatio) => {
+    if (elapsedRatio < 0.5) return '#4ade80';
+    if (elapsedRatio < 0.75) return '#facc15';
+    if (elapsedRatio < 0.9) return '#fb923c';
+    return '#f87171';
+  };
+
   const elapsedSeconds = isStudying ? studyDuration - timeRemaining : 0;
+  const elapsedRatio = studyDuration > 0 ? elapsedSeconds / studyDuration : 0;
   const isStudyRunning = isActive && isStudying;
   const studyTabItems = favorites.filter((f) => f.category === activeTab);
   const breakTabItems = favorites.filter((f) => f.category === BREAK_CATEGORY.id);
@@ -140,11 +149,16 @@ const YouTubePlayer = () => {
 
       {/* YouTubeプレイヤーエリア */}
       <div className={styles.playerArea}>
-        {/* 経過時間カウンター（Study Time進行中かつYouTube非表示時） */}
+        {/* 残り時間カウントダウン（Study Time進行中かつYouTube非表示時） */}
         {isStudyRunning && !showYoutube && (
           <div className={styles.elapsedCounter}>
             <div className={styles.elapsedLabel}>Study Time</div>
-            <div className={styles.elapsedTime}>{formatElapsed(elapsedSeconds)}</div>
+            <div
+              className={styles.elapsedTime}
+              style={{ color: getTimerColor(elapsedRatio) }}
+            >
+              {formatTime(timeRemaining)}
+            </div>
           </div>
         )}
 
@@ -162,7 +176,7 @@ const YouTubePlayer = () => {
             className={styles.youtubeToggleBtn}
             onClick={() => setShowYoutube((v) => !v)}
           >
-            {showYoutube ? "✕ Hide" : "▶ YouTube を見る"}
+            {showYoutube ? "✕ Hide" : "▶ Show YouTube"}
           </button>
         )}
       </div>
@@ -172,7 +186,7 @@ const YouTubePlayer = () => {
         <div className={styles.playlists}>
           <h3 className={styles.playlistsTitle}>My Playlists</h3>
           <div className={styles.playlistTabs}>
-            {STUDY_CATEGORIES.map((cat) => (
+            {[...STUDY_CATEGORIES, BREAK_CATEGORY].map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveTab(cat.id)}

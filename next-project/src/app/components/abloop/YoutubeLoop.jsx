@@ -231,8 +231,8 @@ const YouTubeABLoop = () => {
     <div className={styles.abLoopContainer}>
       <h1 className={styles.pageTitle}>AB Repeat Online — Free AB Loop Player</h1>
       <p className={styles.pageDescription}>
-        語学学習のシャドーイング・楽器の練習・動画学習など、特定の区間を繰り返し再生したい方に。
-        YouTubeのURLを貼るだけで、A点〜B点を自由にループ再生できます。
+        Perfect for language shadowing, instrument practice, and video learning — whenever you need to repeat a specific section.
+        Just paste a YouTube URL and freely loop any segment from point A to point B.
       </p>
       <div className={styles.videoArea}>
         <div className={styles.urlInputContainer}>
