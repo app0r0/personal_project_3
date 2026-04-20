@@ -8,6 +8,7 @@ export const metadata = {
   title: 'How to Loop a YouTube Video: The Complete Guide to YouTube Repeat & Looper Tools',
   description: 'Learn every method to loop YouTube videos — from the built-in right-click option to URL tricks and AB loop tools. Discover the best YouTube looper for language learning, instrument practice, and more.',
   keywords: 'youtube loop, youtube looper, youtube repeat, youtube repeater, loop youtube video, youtube loop url, youtube repeat url',
+  alternates: { canonical: "https://learnlooper.app/articles/article11" },
 };
 
 export default function HowToLoopYouTubeVideo() {

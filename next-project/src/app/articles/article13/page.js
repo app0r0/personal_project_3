@@ -8,6 +8,7 @@ export const metadata = {
   title: 'YouTube Pomodoro: Study with Music Using a Free Timer Tool',
   description: 'Use YouTube as a Pomodoro timer with music. Learn why standard YouTube pomodoro videos fall short and how to build a custom study timer with your own background music.',
   keywords: 'youtube pomodoro, youtube pomodoro timer, youtube pomodoro music, youtube pomodoro study with me, youtube pomodoro timer with music, pomodoro youtube',
+  alternates: { canonical: "https://learnlooper.app/articles/article13" },
 };
 
 export default function YouTubePomodoro() {

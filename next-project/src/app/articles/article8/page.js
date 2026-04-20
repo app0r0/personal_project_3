@@ -4,6 +4,10 @@ import Footer from '../../components/common/Footer';
 import styles from '../Blog.module.css';
 import Link from "next/link";
 
+export const metadata = {
+  alternates: { canonical: "https://learnlooper.app/articles/article8" },
+};
+
 export default function MultiAudioUpload() {
   return (
     <>

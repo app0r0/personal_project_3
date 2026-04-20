@@ -21,6 +21,9 @@ export const metadata = {
     "youtube loop music study",
     "youtube repeat music study",
   ],
+  alternates: {
+    canonical: "https://learnlooper.app/tools/learnlooper",
+  },
 };
 
 const LL = () => {

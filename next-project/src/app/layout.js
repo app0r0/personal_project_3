@@ -1,5 +1,6 @@
 import React from "react";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import HotjarProvider from './components/common/HotjarProvider';
 import DisplayLockProvider from './components/common/DisplayLockProvider';
 const metadata = {
@@ -66,6 +67,7 @@ export default function RootLayout({ children }) {
         <DisplayLockProvider>
           {children}
         </DisplayLockProvider>
+        <Analytics />
       </body>
     </html>
   );

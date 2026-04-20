@@ -4,6 +4,10 @@ import Footer from '../../components/common/Footer';
 import styles from '../Blog.module.css';
 import Link from "next/link";
 
+export const metadata = {
+  alternates: { canonical: "https://learnlooper.app/articles/article1" },
+};
+
 export default function Article1() {
   return (
     <>

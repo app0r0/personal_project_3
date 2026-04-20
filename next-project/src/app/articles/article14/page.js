@@ -8,6 +8,7 @@ export const metadata = {
   title: 'How to Loop a Specific Section of a YouTube Video: AB Repeat Guide',
   description: 'Learn how to loop a specific section of any YouTube video using AB repeat. Perfect for language shadowing, instrument practice, and dance choreography.',
   keywords: 'youtube loop custom, youtube ab loop, youtube repeat ab, ab loop youtube, ab repeat youtube, loop section youtube',
+  alternates: { canonical: "https://learnlooper.app/articles/article14" },
 };
 
 export default function LoopSpecificSectionYouTube() {

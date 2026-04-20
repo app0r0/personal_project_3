@@ -4,6 +4,9 @@ export const metadata = {
   title: "LearnLooper — YouTube Loop, Repeat & Pomodoro Study Tools",
   description:
     "Free tools to loop and repeat YouTube videos, run Pomodoro timers with music, and stay focused while studying. No sign-up, no ads. Works on mobile and desktop.",
+  alternates: {
+    canonical: "https://learnlooper.app",
+  },
   keywords: [
     "youtube loop",
     "youtube repeat",

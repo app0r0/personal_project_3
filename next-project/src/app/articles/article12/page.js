@@ -8,6 +8,7 @@ export const metadata = {
   title: 'How to Loop Study Music on YouTube: Café BGM, Rain Sounds & Lo-Fi for Hours',
   description: 'Discover how to loop café BGM, rain sounds, and lo-fi music on YouTube without searching for long videos. Use a YouTube music looper to keep your study music playing all day.',
   keywords: 'youtube loop music, youtube repeat music, study music youtube loop, cafe music youtube loop, lofi youtube loop, youtube music study',
+  alternates: { canonical: "https://learnlooper.app/articles/article12" },
 };
 
 export default function LoopStudyMusicYouTube() {
