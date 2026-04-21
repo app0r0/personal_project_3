@@ -96,8 +96,10 @@ const YouTubeABLoop = () => {
       title: event.target.getVideoData().title,
     });
     if (pendingTimesRef.current) {
-      setStartTime(pendingTimesRef.current.startTime);
-      setEndTime(pendingTimesRef.current.endTime);
+      const { startTime: pendingStart, endTime: pendingEnd } = pendingTimesRef.current;
+      setStartTime(pendingStart);
+      setEndTime(pendingEnd);
+      event.target.seekTo(pendingStart, true);
       pendingTimesRef.current = null;
     } else {
       setEndTime(duration);
