@@ -7,7 +7,7 @@ const YouTubeABLoop = () => {
   const [videoUrl, setVideoUrl] = useState(
     "https://www.youtube.com/watch?v=lN8xbrzvggA&ab_channel=JazzTutorial%7CwithJulianBradley"
   );
-  const [memo, setMemo] = useState([]);
+  const [playlists, setPlaylists] = useState([]);
   const [videoId, setVideoId] = useState("");
   const [videoMetadata, setVideoMetadata] = useState(null);
   const [startTime, setStartTime] = useState(0);
@@ -18,13 +18,12 @@ const YouTubeABLoop = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const playerRef = useRef(null);
   const timerRef = useRef(null);
+  const pendingTimesRef = useRef(null);
 
-  /*urlが変更されたらID抽出 */
   useEffect(() => {
     extractVideoId();
   }, [videoUrl]);
 
-  /*IDが変更されたらプレイヤー作成 */
   useEffect(() => {
     if (!window.YT) {
       const tag = document.createElement("script");
@@ -45,7 +44,6 @@ const YouTubeABLoop = () => {
     };
   }, [videoId]);
 
-  /*startTime,endTimeが変更されたら*/
   useEffect(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
@@ -57,28 +55,22 @@ const YouTubeABLoop = () => {
     }, 100);
   }, [startTime, endTime, isLooping, currentTime]);
 
-  // ページ読み込み時にローカルストレージからメモを取得
   useEffect(() => {
-    const storedMemo = localStorage.getItem("abloop-memo");
-    if (storedMemo) {
+    const stored = localStorage.getItem("abloop-playlists");
+    if (stored) {
       try {
-        const parsedMemo = JSON.parse(storedMemo);
-        setMemo(Array.isArray(parsedMemo) ? parsedMemo : []);
+        const parsed = JSON.parse(stored);
+        setPlaylists(Array.isArray(parsed) ? parsed : []);
       } catch (e) {
-        console.error("Failed to parse stored memo:", e);
-        setMemo([]);
+        setPlaylists([]);
       }
     }
   }, []);
 
-  // メモが変更されたらローカルストレージに保存
   useEffect(() => {
-    if (memo.length > 0) {
-      localStorage.setItem("abloop-memo", JSON.stringify(memo));
-    }
-  }, [memo]);
+    localStorage.setItem("abloop-playlists", JSON.stringify(playlists));
+  }, [playlists]);
 
-  /*以下関数 */
   const createPlayer = (id) => {
     if (playerRef.current) {
       playerRef.current.destroy();
@@ -103,7 +95,13 @@ const YouTubeABLoop = () => {
       duration: duration,
       title: event.target.getVideoData().title,
     });
-    setEndTime(duration);
+    if (pendingTimesRef.current) {
+      setStartTime(pendingTimesRef.current.startTime);
+      setEndTime(pendingTimesRef.current.endTime);
+      pendingTimesRef.current = null;
+    } else {
+      setEndTime(duration);
+    }
   };
 
   const onPlayerStateChange = (event) => {
@@ -210,17 +208,24 @@ const YouTubeABLoop = () => {
     setVideoUrl("");
   };
 
-  const handleSaveUrls = (event) => {
-    const [url, title] = event.target.value.split(",");
-    if (url && title) {
-      const newMemo = [...memo, [url, title]];
-      setMemo(newMemo);
-    }
+  const saveToPlaylist = () => {
+    if (!videoMetadata) return;
+    const newItem = {
+      title: videoMetadata.title,
+      url: videoUrl,
+      startTime,
+      endTime,
+    };
+    setPlaylists((prev) => [newItem, ...prev]);
   };
 
-  const copyToClipboard = (url) => {
-    navigator.clipboard.writeText(url);
-    alert("Copied URL !");
+  const loadPlaylistItem = (item) => {
+    pendingTimesRef.current = { startTime: item.startTime, endTime: item.endTime };
+    setVideoUrl(item.url);
+  };
+
+  const deletePlaylistItem = (index) => {
+    setPlaylists((prev) => prev.filter((_, i) => i !== index));
   };
 
   const duration = videoMetadata?.duration || 0;
@@ -247,27 +252,9 @@ const YouTubeABLoop = () => {
             />
             <button onClick={clearURL}>Clear</button>
             {videoMetadata && (
-              <button
-                onClick={handleSaveUrls}
-                value={`${videoUrl},${videoMetadata.title}`}
-              >
-                Save URL
-              </button>
+              <button onClick={saveToPlaylist}>Save</button>
             )}
           </div>
-          {memo
-            .slice(-10)
-            .reverse()
-            .map((item, index) => (
-              <div key={memo.length - 10 + index} className={styles.memoItem}>
-                <button
-                  onClick={() => copyToClipboard(item[0])}
-                  className={styles.memoButton}
-                >
-                  {item[1]}
-                </button>
-              </div>
-            ))}
         </div>
 
         <div className={styles.playerContainer}>
@@ -362,14 +349,49 @@ const YouTubeABLoop = () => {
             </button>
           </div>
         </div>
+
+        <div className={styles.playlists}>
+          <h3 className={styles.playlistsTitle}>My Playlists</h3>
+          <div className={styles.playlistItems}>
+            {playlists.length === 0 ? (
+              <p className={styles.emptyMessage}>No saved loops yet. Set A–B points and press Save.</p>
+            ) : (
+              playlists.map((item, i) => (
+                <div key={i} className={styles.playlistItem}>
+                  <div className={styles.itemInfo}>
+                    <span className={styles.itemTitle}>{item.title}</span>
+                    <span className={styles.itemTimes}>
+                      {formatTime(item.startTime)} – {formatTime(item.endTime)}
+                    </span>
+                  </div>
+                  <div className={styles.itemActions}>
+                    <button
+                      onClick={() => loadPlaylistItem(item)}
+                      className={styles.playBtn}
+                    >
+                      ▶ Play
+                    </button>
+                    <button
+                      onClick={() => deletePlaylistItem(i)}
+                      className={styles.deleteBtn}
+                    >
+                      🗑
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
 
       <div className={styles.detailSection}>
         <h2 className={styles.detailTitle}>How to use</h2>
         <ol className={styles.detailList}>
           <li>Paste a YouTube URL into the input field above.</li>
-          <li>Use the A/B sliders or the "Set starting/ending time" buttons to define your loop range.</li>
+          <li>Use the A/B sliders or the &quot;Set starting/ending time&quot; buttons to define your loop range.</li>
           <li>Press Play — the video loops between A and B automatically.</li>
+          <li>Press Save to add the current loop setting to My Playlists for quick access later.</li>
         </ol>
         <p className={styles.detailText}>
           Perfect for language shadowing, instrument practice, dance choreography, or any time you need to repeat a specific section of a video.

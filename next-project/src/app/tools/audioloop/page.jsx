@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import Header from "../../components/common/Header";
+import CompactHeader from "../../components/common/CompactHeader";
 import Footer from "../../components/common/Footer";
 import AudioUploader from '../../components/audioloop/AudioUploader';
 import AudioPlayerList from '../../components/audioloop/AudioPlayerList';
@@ -32,7 +32,7 @@ export default function AudioLoopPage() {
   };
 
   return (
-    <><Header /><div className={styles.container}>
+    <><CompactHeader /><div className={styles.container}>
     <div className={styles.card}>
       <h1 className={styles.title}>
         📁 LearnLooper: Multiple Audio Files Loop Tool

@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '../../components/common/Header';
+import CompactHeader from '../../components/common/CompactHeader';
 import Footer from '../../components/common/Footer';
 import styles from '../Blog.module.css';
 import Link from "next/link";
@@ -14,7 +14,7 @@ export const metadata = {
 export default function LoopSpecificSectionYouTube() {
   return (
     <>
-      <Header />
+      <CompactHeader />
       <div className={styles.navLink}>
         <Link href="/">Home</Link> &gt;<Link href="/articles">Articles</Link> &gt; <Link href="/articles/article14">Loop a Specific Section of a YouTube Video</Link>
       </div>

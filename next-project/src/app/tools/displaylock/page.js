@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import styles from './DisplayLockPage.module.css';
-import Header from "../../components/common/Header";
+import CompactHeader from "../../components/common/CompactHeader";
 import Footer from "../../components/common/Footer";
 
 // クライアントサイドでのみ読み込むコンポーネント
@@ -163,7 +163,7 @@ const DisplayLockWrapper = dynamic(
 export default function DisplayLockPage() {
   return (
     <>
-      <Header />
+      <CompactHeader />
       <div className={styles.container}>
         <h1 className={styles.title}>Display Lock Settings</h1>
         <p className={styles.description}>

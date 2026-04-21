@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '../../components/common/Header';
+import CompactHeader from '../../components/common/CompactHeader';
 import Footer from '../../components/common/Footer';
 import styles from '../Blog.module.css';
 import Link from "next/link";
@@ -14,7 +14,7 @@ export const metadata = {
 export default function HowToLoopYouTubeVideo() {
   return (
     <>
-      <Header />
+      <CompactHeader />
       <div className={styles.navLink}>
         <Link href="/">Home</Link> &gt;<Link href="/articles">Articles</Link> &gt; <Link href="/articles/article11">How to Loop a YouTube Video</Link>
       </div>
