@@ -229,11 +229,10 @@ const YouTubeABLoop = () => {
 
   return (
     <div className={styles.abLoopContainer}>
-      <h1 className={styles.pageTitle}>AB Repeat Online — Free AB Loop Player</h1>
-      <p className={styles.pageDescription}>
-        Perfect for language shadowing, instrument practice, and video learning — whenever you need to repeat a specific section.
-        Just paste a YouTube URL and freely loop any segment from point A to point B.
-      </p>
+      <div className={styles.heroSection}>
+        <h1 className={styles.pageTitle}>AB Repeat — Free YouTube Loop Player</h1>
+        <p className={styles.pageDescription}>Loop any section of a YouTube video. Paste a URL and set your A–B points.</p>
+      </div>
       <div className={styles.videoArea}>
         <div className={styles.urlInputContainer}>
           <div>Please paste YouTube URL or ID</div>
@@ -363,6 +362,19 @@ const YouTubeABLoop = () => {
             </button>
           </div>
         </div>
+      </div>
+
+      <div className={styles.detailSection}>
+        <h2 className={styles.detailTitle}>How to use</h2>
+        <ol className={styles.detailList}>
+          <li>Paste a YouTube URL into the input field above.</li>
+          <li>Use the A/B sliders or the "Set starting/ending time" buttons to define your loop range.</li>
+          <li>Press Play — the video loops between A and B automatically.</li>
+        </ol>
+        <p className={styles.detailText}>
+          Perfect for language shadowing, instrument practice, dance choreography, or any time you need to repeat a specific section of a video.
+          No sign-up, no extension required — works entirely in your browser.
+        </p>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../../components/common/Header";
+import AbloopHeader from "../../components/abloop/AbloopHeader";
 import Footer from "../../components/common/Footer";
 import YouTubeABLoop from "../../components/abloop/YoutubeLoop";
 import OtherTools from "../../components/common/OtherTools";
@@ -46,7 +46,7 @@ export const metadata = {
 const YAB = () => {
   return (
     <>
-      <Header />
+      <AbloopHeader />
       <YouTubeABLoop />
       <OtherTools currentTool="abloop" />
       <Footer />

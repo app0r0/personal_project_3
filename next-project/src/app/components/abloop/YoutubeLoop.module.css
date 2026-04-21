@@ -10,28 +10,29 @@
   overflow-x: hidden;
 }
 
+.heroSection {
+  padding: 0.75rem 0.5rem 1rem;
+}
+
 .pageTitle {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: #333;
-  margin-bottom: 0.4rem;
-  padding: 0 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .pageDescription {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: #666;
-  line-height: 1.6;
-  margin-bottom: 1.2rem;
-  padding: 0 0.5rem;
+  margin: 0;
 }
 
 @media (max-width: 768px) {
   .pageTitle {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   .pageDescription {
-    font-size: 0.85rem;
+    font-size: 0.825rem;
   }
 }
 
@@ -46,10 +47,12 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .urlInputBox > input {
-  flex-grow: 1;
+  flex: 1 1 200px;
+  min-width: 0;
   padding: 0.75rem 1rem;
   font-size: 1rem;
   border: 2px solid #e0e0e0;
@@ -366,4 +369,32 @@
   font-size: 0.85rem;
   min-height: 1.2em;
   margin: 4px 0;
+}
+
+/* 詳細説明セクション（スクロール下） */
+.detailSection {
+  margin-top: 2rem;
+  padding: 1.5rem 0.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.detailTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.75rem;
+}
+
+.detailList {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.7;
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.detailText {
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.7;
 }
