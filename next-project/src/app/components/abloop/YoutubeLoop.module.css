@@ -465,6 +465,48 @@
   margin: 4px 0;
 }
 
+/* 再生速度コントロール */
+.speedControl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 8px 0 12px;
+}
+
+.speedBtn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #e0e0e0;
+  border-radius: 50%;
+  background: #f5f5f5;
+  color: #333;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.speedBtn:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.speedBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.speedDisplay {
+  min-width: 3.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+}
+
 /* 詳細説明セクション（スクロール下） */
 .detailSection {
   margin-top: 2rem;

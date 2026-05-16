@@ -15,10 +15,12 @@ const YouTubeABLoop = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isLooping, setIsLooping] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1.0);
   const [errorMessage, setErrorMessage] = useState("");
   const playerRef = useRef(null);
   const timerRef = useRef(null);
   const pendingTimesRef = useRef(null);
+  const keyHandlerRef = useRef(null);
 
   useEffect(() => {
     extractVideoId();
@@ -70,6 +72,57 @@ const YouTubeABLoop = () => {
   useEffect(() => {
     localStorage.setItem("abloop-playlists", JSON.stringify(playlists));
   }, [playlists]);
+
+  // キーボードショートカット: refに最新の関数・状態を毎レンダーで更新
+  keyHandlerRef.current = (e) => {
+    const tag = document.activeElement?.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+    switch (e.key) {
+      case " ":
+        e.preventDefault();
+        togglePlayPause();
+        break;
+      case "a":
+      case "A":
+        setCurrentTimeAsStart();
+        break;
+      case "b":
+      case "B":
+        setCurrentTimeAsEnd();
+        break;
+      case "l":
+      case "L":
+        toggleLooping();
+        break;
+      case "ArrowLeft":
+        if (playerRef.current) {
+          const t = playerRef.current.getCurrentTime();
+          playerRef.current.seekTo(Math.max(0, t - 5), true);
+        }
+        break;
+      case "ArrowRight":
+        if (playerRef.current) {
+          const t = playerRef.current.getCurrentTime();
+          playerRef.current.seekTo(t + 5, true);
+        }
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        changePlaybackRate(0.1);
+        break;
+      case "ArrowDown":
+        e.preventDefault();
+        changePlaybackRate(-0.1);
+        break;
+    }
+  };
+
+  useEffect(() => {
+    const handler = (e) => keyHandlerRef.current?.(e);
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   const createPlayer = (id) => {
     if (playerRef.current) {
@@ -153,6 +206,17 @@ const YouTubeABLoop = () => {
     if (playerRef.current) {
       playerRef.current.seekTo(startTime);
     }
+  };
+
+  const changePlaybackRate = (delta) => {
+    setPlaybackRate((prev) => {
+      const next = Math.round((prev + delta) * 10) / 10;
+      const clamped = Math.min(Math.max(next, 0.25), 2.0);
+      if (playerRef.current) {
+        playerRef.current.setPlaybackRate(clamped);
+      }
+      return clamped;
+    });
   };
 
   const formatTime = (seconds) => {
@@ -340,6 +404,27 @@ const YouTubeABLoop = () => {
               <Repeat />
             </button>
           </div>
+
+          <div className={styles.speedControl}>
+            <button
+              onClick={() => changePlaybackRate(-0.1)}
+              disabled={playbackRate <= 0.25}
+              aria-label="decrease speed"
+              className={styles.speedBtn}
+            >
+              －
+            </button>
+            <span className={styles.speedDisplay}>{playbackRate.toFixed(1)}x</span>
+            <button
+              onClick={() => changePlaybackRate(0.1)}
+              disabled={playbackRate >= 2.0}
+              aria-label="increase speed"
+              className={styles.speedBtn}
+            >
+              ＋
+            </button>
+          </div>
+
           <div className={styles.controlButtons}>
             <button onClick={setCurrentTimeAsStart}>
               Set the <p className={styles.setStartTimeButton}>starting time</p>{" "}
@@ -387,19 +472,6 @@ const YouTubeABLoop = () => {
         </div>
       </div>
 
-      <div className={styles.detailSection}>
-        <h2 className={styles.detailTitle}>How to use</h2>
-        <ol className={styles.detailList}>
-          <li>Paste a YouTube URL into the input field above.</li>
-          <li>Use the A/B sliders or the &quot;Set starting/ending time&quot; buttons to define your loop range.</li>
-          <li>Press Play — the video loops between A and B automatically.</li>
-          <li>Press Save to add the current loop setting to My Playlists for quick access later.</li>
-        </ol>
-        <p className={styles.detailText}>
-          Perfect for language shadowing, instrument practice, dance choreography, or any time you need to repeat a specific section of a video.
-          No sign-up, no extension required — works entirely in your browser.
-        </p>
-      </div>
     </div>
   );
 };

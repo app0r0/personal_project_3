@@ -1,0 +1,137 @@
+.wrapper {
+  max-width: 800px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.section {
+  padding: 1.5rem 0.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.heading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.75rem;
+}
+
+.body {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 0.75rem;
+}
+
+.body:last-child {
+  margin-bottom: 0;
+}
+
+.list {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.7;
+  padding-left: 1.25rem;
+  margin: 0;
+}
+
+.list li {
+  margin-bottom: 0.4rem;
+}
+
+.list li:last-child {
+  margin-bottom: 0;
+}
+
+.shortcutTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.shortcutTh {
+  text-align: left;
+  padding: 8px 12px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.shortcutRow:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.shortcutKey {
+  padding: 8px 12px;
+  white-space: nowrap;
+  width: 1%;
+}
+
+.shortcutKey kbd {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  font-family: monospace;
+  color: #333;
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 #bbb;
+}
+
+.shortcutAction {
+  padding: 8px 12px;
+  color: #555;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .shortcutTable {
+    font-size: 0.85rem;
+  }
+}
+
+.faqList {
+  margin: 0;
+}
+
+.faqItem {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.faqItem:last-child {
+  border-bottom: none;
+}
+
+.question {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.35rem;
+}
+
+.answer {
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .heading {
+    font-size: 1rem;
+  }
+
+  .body,
+  .list,
+  .question {
+    font-size: 0.875rem;
+  }
+
+  .answer {
+    font-size: 0.85rem;
+  }
+}

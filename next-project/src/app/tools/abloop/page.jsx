@@ -2,12 +2,13 @@ import React from "react";
 import CompactHeader from "../../components/common/CompactHeader";
 import Footer from "../../components/common/Footer";
 import YouTubeABLoop from "../../components/abloop/YoutubeLoop";
+import AbloopInfo from "../../components/abloop/AbloopInfo";
 import OtherTools from "../../components/common/OtherTools";
 
 export const metadata = {
-  title: "YouTube AB Repeat — Free Loop Player | LearnLooper",
+  title: "AB Loop Player for YouTube — Set Any Repeat Section Free | LearnLooper",
   description:
-    "Free YouTube AB loop and repeat player. Loop any section of a YouTube video — perfect for language shadowing, music practice, and dance. No sign-up needed. Also works as a YouTube repeater or looper.",
+    "The free AB loop player for YouTube. Paste any video URL, set your A and B points, and repeat that exact section on loop. Used for language shadowing, instrument practice, and focused study. No extension or sign-up needed.",
   keywords: [
     "youtube ab loop",
     "youtube ab repeat",
@@ -48,6 +49,7 @@ const YAB = () => {
     <>
       <CompactHeader />
       <YouTubeABLoop />
+      <AbloopInfo />
       <OtherTools currentTool="abloop" />
       <Footer />
     </>
