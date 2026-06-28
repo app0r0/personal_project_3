@@ -183,7 +183,7 @@ const YouTubePlayer = () => {
 
       {/* Study Time用 My Playlists */}
       {isStudying && (
-        <div className={styles.playlists}>
+        <div className={`${styles.playlists} ${activeTab !== "breaktime" ? styles.darkTheme : ""}`}>
           <h3 className={styles.playlistsTitle}>My Playlists</h3>
           <div className={styles.playlistTabs}>
             {[...STUDY_CATEGORIES, BREAK_CATEGORY].map((cat) => (

@@ -233,6 +233,10 @@
   margin: 0;
 }
 
+.darkTheme .emptyMessage {
+  color: #aaaaaa;
+}
+
 .playlistItem {
   display: flex;
   align-items: center;
@@ -254,6 +258,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.darkTheme .itemTitle {
+  color: #ffffff;
 }
 
 .itemActions {
